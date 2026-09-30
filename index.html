@@ -1,0 +1,451 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0c6b43"><title>AMC SiteFlow</title><link rel="stylesheet" href="styles.css"></head><body>
+<div class="shell" style="display:none;"><div class="header-actions">
+   ...
+   
+</div>
+<aside class="sidebar"><div class="brand"><span class="mark">AMC</span><div><strong>AMC SiteFlow</strong><small>Anil Mehta Co.</small></div></div><nav id="nav"><button class="active" data-view="dashboard">🖥️ Dashboard / डैशबोर्ड</button><button data-view="concrete">🪨 Concrete Details / कंक्रीट</button><button data-view="stock">🧰 Material / सामग्री</button><button data-view="oil">🏗️ Oil & Machines / तेल</button><button data-view="labour">👷 Attendance / हाज़िरी</button><button data-view="billing">🧾 Billing / बिलिंग</button><button data-view="calculator">📱 Calculators / कैलकुलेटर</button><button data-view="reports">🖨️ Reports / रिपोर्ट</button><button data-view="userManagement" id="userManagementNav">
+  👥 User Management
+</button><button class="nav-btn" data-view="about">
+  <span>🏢</span>
+  <span>About AMC</span>
+</button><button type="button" id="logoutButton">➡️ Logout</button></nav><button class="profile profile-card" id="profileButton" type="button" aria-label="Edit Profile">
+  <span class="profile-card-glow" aria-hidden="true"></span>
+  <span class="avatar profile-avatar" id="avatar">+</span>
+  <span class="profile-card-info">
+    <span class="profile-card-top"><b>MY PROFILE</b><em>EDIT</em></span>
+    <strong id="profileName">Set entry profile</strong>
+    <small id="profileRole">नाम और पद लिखें</small>
+  </span>
+  <span class="profile-card-arrow" aria-hidden="true">✦</span>
+</button></aside>
+<main><header><button class="menu" id="menu">☰</button><div><h1 id="pageTitle">AMC SiteFlow</h1><p id="pageSub">Construction management · निर्माण प्रबंधन</p></div><div class="header-actions"><select id="siteFilter"></select><button class="outline" id="addProject">＋ Project</button><button class="primary" id="quickAdd">＋ Material entry</button></div></header>
+<section id="dashboard" class="view active"><div class="welcome"><div><h2>Welcome to AMC SiteFlow</h2><p>Start by adding a project, then record material, fuel, labour and billing entries.</p></div><button class="primary" id="welcomeProject">＋ Add first project</button></div><div class="cards" id="summaryCards"></div><div class="grid two"><article class="panel"><div class="panel-head"><h2>Business summary</h2></div><div id="dashboardSummary" class="list"></div></article><article class="panel"><div class="panel-head"><h2>All pending entries</h2><span class="badge warn" id="allPendingCount">0 pending</span></div><div id="allPending" class="list"></div></article></div><div class="grid two"><article class="panel"><div class="panel-head"><h2>Pending material return</h2><span class="badge warn" id="pendingCount">0 contractors</span></div><div id="pendingReturns" class="list"></div></article><article class="panel"><div class="panel-head"><h2>Low stock alert</h2><span class="badge danger" id="lowCount">0 materials</span></div><div id="lowStock" class="list"></div></article></div><div class="grid two"><article class="panel"><div class="panel-head"><h2>Recent activity</h2><button class="link" data-go="reports">View report</button></div><div id="activity" class="timeline"></div></article><article class="panel"><div class="panel-head"><h2>Project snapshot</h2></div><div id="siteSnapshot"></div></article></div></section>
+
+
+<section id="concrete" class="view">
+
+  <div class="section-head">
+    <div>
+      <h2>🧱 Concrete Details / कंक्रीट</h2>
+      <p>Concrete measurement, quantity, rate and billing details.</p>
+    </div>
+
+    <button class="primary" type="button" id="addConcreteButton">
+      ＋ Add Concrete
+    </button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Concrete Register</h2>
+      <span class="badge" id="concreteCount">0 entries</span>
+    </div>
+
+    <div id="concreteList"></div>
+  </div>
+
+</section>
+
+<section id="stock" class="view"><div class="section-head"><div><h2>Material Management</h2><p>Stock, contractor issue/return and consumption are kept separately.</p></div><button class="primary" data-modal="stock">＋ Material entry</button></div><div class="tabs"><button class="tab active" data-stocktab="balance">Stock balance</button><button class="tab" data-stocktab="consumption">Consumption / issue</button><button class="tab" data-stocktab="register">Full material register</button></div><div id="stockContent"></div></section>
+<section id="oil" class="view"><div class="section-head"><div><h2>Oil & Machine Management</h2><p>Fuel tank stock and machine consumption are shown separately.</p></div><button class="primary" data-modal="oil">＋ Oil entry</button></div><div class="tabs"><button class="tab oiltab active" data-oiltab="balance">Fuel stock</button><button class="tab oiltab" data-oiltab="consumption">Machine consumption</button><button class="tab oiltab" data-oiltab="register">Full oil register</button></div><div id="oilContent"></div></section>
+<section id="labour" class="view"><div class="section-head"><div><h2>Daily Labour Attendance</h2><p>Date-wise attendance and site labour register.</p></div><button class="primary" data-modal="labour">＋ Mark attendance</button></div><article class="panel"><div class="filterbar"><label>Attendance date<select id="attendanceDate"></select></label><label>Project<select id="attendanceSite"></select></label></div><div class="cards slim" id="labourCards"></div><div class="panel-head"><h2>Attendance store register</h2></div><div id="labourTable"></div></article></section>
+<section id="billing" class="view"><div class="section-head"><div><h2>Advanced Billing & Contractor Ledger</h2><p>Work bills, payment received and material-return debit together.</p></div><button class="primary" data-modal="bill">＋ Create bill</button></div><article class="panel"><div class="filterbar"><label>Bill date<select id="billDate"></select></label><label>Contractor<select id="billContractor"></select></label><label>Project<select id="billSite"></select></label></div><div class="grid two"><div><div class="panel-head"><h2>Contractor ledger</h2></div><div id="ledger"></div></div><div class="rule"><span>↺</span><p>Issued material that is not returned remains as a <b>pending debit</b> for that contractor. Enter a <b>Return</b> material entry to reduce it automatically.</p></div></div><div class="panel-head"><h2>Work bills</h2></div><div id="billTable"></div></article></section>
+<section id="calculator" class="view">
+  <div class="section-head">
+    <div><h2>Construction Calculators & Unit Conversion</h2><p>Area, perimeter, volume, steel weight, geometry and scientific calculations.</p></div>
+    <button class="primary" type="button" id="scientificOpen">🧮 Scientific Calculator</button>
+  </div>
+
+  <div class="grid three">
+    <article class="panel calc"><h3>Area calculator</h3><label>Length<input id="areaL" type="number" value="0" min="0" step="any"></label><label>Width<input id="areaW" type="number" value="0" min="0" step="any"></label><label>Unit<select id="areaUnit"><option value="mm">Millimetre (mm)</option><option value="cm">Centimetre (cm)</option><option value="m" selected>Metre (m)</option><option value="ft">Feet (ft)</option><option value="in">Inch (in)</option><option value="yd">Yard (yd)</option></select></label><div class="result" id="areaResult">Enter dimensions</div></article>
+    <article class="panel calc"><h3>Concrete volume</h3><label>Length<input id="conL" type="number" value="0" min="0" step="any"></label><label>Width<input id="conW" type="number" value="0" min="0" step="any"></label><label>Depth<input id="conD" type="number" value="0" min="0" step="any"></label><label>Unit<select id="conUnit"><option value="mm">Millimetre (mm)</option><option value="cm">Centimetre (cm)</option><option value="m" selected>Metre (m)</option><option value="ft">Feet (ft)</option><option value="in">Inch (in)</option><option value="yd">Yard (yd)</option></select></label><div class="result" id="conResult">Enter dimensions</div></article>
+    <article class="panel calc"><h3>Steel weight</h3><label>Bar diameter (mm)<input id="steelD" type="number" value="0" min="0" step="any"></label><label>Total length<input id="steelL" type="number" value="0" min="0" step="any"></label><label>Length unit<select id="steelUnit"><option value="mm">Millimetre</option><option value="cm">Centimetre</option><option value="m" selected>Metre</option><option value="ft">Feet</option><option value="in">Inch</option></select></label><div class="result" id="steelResult">Enter size and length</div></article>
+  </div>
+
+  <article class="panel geometry-panel">
+    <div class="panel-head"><div><h3>2D Area & Perimeter / 3D Volume Calculator</h3><p>Rectangle, square, circle, triangle, trapezoid, parallelogram, rhombus, sector, cuboid, cube, cylinder, cone, sphere and hemisphere.</p></div></div>
+    <div class="geometry-toolbar"><label class="geometry-field"><span>Shape</span><select id="geometryType"><optgroup label="2D — Area / Perimeter / Volume"><option value="rectangle">Rectangle</option><option value="square">Square</option><option value="circle">Circle</option><option value="triangle">Triangle</option><option value="trapezoid">Trapezoid</option><option value="parallelogram">Parallelogram</option><option value="rhombus">Rhombus</option><option value="sector">Circular Sector</option></optgroup><optgroup label="3D — Volume / Surface Area"><option value="cuboid">Cuboid</option><option value="cube">Cube</option><option value="cylinder">Cylinder</option><option value="cone">Cone</option><option value="sphere">Sphere</option><option value="hemisphere">Hemisphere</option></optgroup></select></label><label class="geometry-field"><span>Calculate</span><select id="geometryMetric"></select></label><button type="button" class="geometry-clear" id="geometryClear" title="Clear dimensions">↺ Clear</button></div>
+    <div id="geometryInputs" class="geometry-inputs"></div>
+    <div class="result geometry-result" id="geometryResult">Enter dimensions above.</div>
+  </article>
+
+  <article class="panel converter"><div><h3>Unit converter</h3><p>Length, area, volume and weight conversions.</p></div><label>Type<select id="convertType"><option value="length">Length</option><option value="area">Area</option><option value="volume">Volume</option><option value="weight">Weight</option></select></label><label>Value<input id="convertValue" type="number" value="1" min="0" step="any"></label><label>From<select id="convertFrom"></select></label><label>To<select id="convertTo"></select></label><div class="result" id="convertResult"></div></article>
+
+  <div class="modal" id="scientificModal">
+    <div class="modal-box scientific-box">
+      <button class="close" id="scientificClose" type="button">×</button>
+      <h2>🧮 Scientific Calculator</h2>
+      <p class="scientific-sub">Trigonometry uses degrees. Supports powers, roots, logs, factorial-style basic arithmetic, constants and parentheses.</p>
+      <input id="scientificDisplay" class="scientific-display" type="text" inputmode="decimal" autocomplete="off" placeholder="Example: sin(30)+sqrt(25)">
+      <div class="scientific-result" id="scientificResult">0</div>
+      <div class="scientific-grid">
+        <button type="button" data-sci="sin(">sin</button><button type="button" data-sci="cos(">cos</button><button type="button" data-sci="tan(">tan</button><button type="button" data-sci="sqrt(">√</button><button type="button" data-sci="π">π</button>
+        <button type="button" data-sci="asin(">asin</button><button type="button" data-sci="acos(">acos</button><button type="button" data-sci="atan(">atan</button><button type="button" data-sci="log(">log</button><button type="button" data-sci="ln(">ln</button>
+        <button type="button" data-sci="7">7</button><button type="button" data-sci="8">8</button><button type="button" data-sci="9">9</button><button type="button" data-sci="/">÷</button><button type="button" data-sci="(">(</button>
+        <button type="button" data-sci="4">4</button><button type="button" data-sci="5">5</button><button type="button" data-sci="6">6</button><button type="button" data-sci="*">×</button><button type="button" data-sci=")">)</button>
+        <button type="button" data-sci="1">1</button><button type="button" data-sci="2">2</button><button type="button" data-sci="3">3</button><button type="button" data-sci="-">−</button><button type="button" data-sci="^">xʸ</button>
+        <button type="button" data-sci="0">0</button><button type="button" data-sci=".">.</button><button type="button" data-sci="+">+</button><button type="button" data-sci="back">⌫</button><button type="button" data-sci="clear">C</button>
+        <button type="button" class="sci-equals" data-sci="equals">= Calculate</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reports" class="view"><div class="section-head"><div><h2>Reports & Export</h2><p>Choose dates, project and register, then export a clean document.</p></div></div><article class="panel report"><div class="filters"><label>From<input id="reportFrom" type="date"></label><label>To<input id="reportTo" type="date"></label>
+
+
+
+
+
+<label>
+  Project
+  <select id="reportSite"></select>
+</label>
+
+<label>
+  Contractors
+  <select id="reportContractor">
+    <option value="All Contractors">All Contractors</option>
+  </select>
+</label>
+
+<label>
+  Report
+  <select id="reportType">
+    <option value="stock">Material register</option>
+    <option value="oil">Oil register</option>
+    <option value="labour">Attendance register</option>
+    <option value="concrete">Concrete register</option>
+    <option value="billing">Contractor ledger</option>
+  </select>
+
+
+
+
+</label><button class="primary" id="generateReport">Generate report</button></div><div id="reportOutput"></div><div class="exports"><button id="exportExcel">Excel / एक्सेल</button><button id="exportPng">PNG image</button><button id="exportPdf">PDF / प्रिंट</button><button class="outline" id="shareReport">🔗 Copy link</button><button id="downloadBackup" type="button">💾 Download Backup</button><button id="restoreBackup" type="button" class="outline">♻️ Restore Backup</button></div></article></section>
+
+
+
+
+<section id="userManagement" class="view">
+
+  <div class="section-head">
+    <div>
+      <h2>👥 User Management</h2>
+      <p>Manage AMC SiteFlow users and their access roles.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+
+    <div class="panel-head">
+      <div>
+        <h2>Users</h2>
+        <p>Authorized users who can access AMC SiteFlow.</p>
+      </div>
+
+      <button
+        type="button"
+        class="primary"
+        id="addUserButton"
+      >
+        ＋ Add User
+      </button>
+
+<!-- ADD USER FORM -->
+
+<div
+  id="addUserForm"
+  class="panel"
+  style="display:none;margin-top:20px;"
+>
+
+  <div class="panel-head">
+    <div>
+      <h2 id="userFormMode">Add New User</h2>
+      <p>Create user details and assign an access role.</p>
+    </div>
+  </div>
+
+  <form id="userForm">
+    <input type="hidden" id="editingUserId" value="">
+
+    <div class="grid two">
+
+      <label>
+        User Name
+        <input
+          type="text"
+          name="userName"
+          id="userName"
+          placeholder="Enter user name"
+          required
+        >
+      </label>
+
+      <label>
+        Email
+        <input
+          type="email"
+          name="userEmail"
+          id="userEmail"
+          placeholder="Enter email address"
+          required
+        >
+      </label>
+
+      <label>
+        Role
+        <select
+          name="userRole"
+          id="userRole"
+          required
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </label>
+
+      <label>
+        Status
+        <select
+          name="userStatus"
+          id="userStatus"
+          required
+        >
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </label>
+
+      <label>
+        Password
+        <input type="password" id="userPassword" placeholder="Minimum 6 characters" minlength="6">
+      </label>
+
+      <label>
+        Confirm Password
+        <input type="password" id="userPasswordConfirm" placeholder="Repeat password" minlength="6">
+      </label>
+
+    </div>
+
+    <p id="userPasswordHint" class="form-help">Minimum 6 characters. Required only when creating a new user.</p>
+
+    <div
+      style="
+        display:flex;
+        gap:10px;
+        margin-top:20px;
+        flex-wrap:wrap;
+      "
+    >
+
+      <button
+        type="submit"
+        class="primary"
+        id="saveUserButton"
+      >
+        💾 Save User
+      </button>
+
+      <button
+        type="button"
+        class="outline"
+        id="cancelUserButton"
+      >
+        ✕ Cancel
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+
+
+
+    </div>
+
+    <div
+      id="userManagementMessage"
+      class="form-warning"
+      style="display:none;"
+    ></div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="userList">
+
+          <tr>
+            <td colspan="5">
+              No users loaded.
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+
+
+
+
+
+<section id="about" class="view">
+
+  <div class="section-head">
+    <div>
+      <h2>🏢 About AMC</h2>
+      <p>Company profile, work experience and contact information.</p>
+    </div>
+  </div>
+
+  <div class="about-card">
+
+    <div class="about-section">
+      <h3> Introduction</h3>
+      <p>
+        <strong>Anil Mehta Co. (AMC)</strong> is an established civil
+        construction and infrastructure organization with more than
+        <strong>30 years of experience</strong> in the construction field.
+        The company has developed extensive experience in civil engineering,
+        infrastructure development, project execution, and site management,
+        with a focus on systematic planning, quality work, efficient resource
+        utilization, and timely project execution.
+      </p>
+    </div>
+
+    <div class="about-section">
+      <h3> Work &amp; Project Experience</h3>
+
+      <div class="about-point">
+        <h4>Road Construction &amp; Development</h4>
+        <p>
+          AMC has experience in road construction, development, and associated
+          civil infrastructure works. Projects are carried out with proper
+          planning, site coordination, material management, workforce
+          management, and attention to construction quality.
+        </p>
+      </div>
+
+      <div class="about-point">
+        <h4>Bridge &amp; Related Civil Works</h4>
+        <p>
+          The company undertakes bridge construction and related civil works,
+          including supporting structural and site-development activities.
+          Proper coordination of manpower, materials, machinery, and site
+          activities is maintained throughout project execution.
+        </p>
+      </div>
+
+      <div class="about-point">
+        <h4>Railway Civil Works</h4>
+        <p>
+          AMC also works on civil infrastructure associated with railway
+          projects. These works involve coordinated site execution,
+          construction activities, material management, and implementation
+          according to project-specific requirements.
+        </p>
+      </div>
+
+      <div class="about-point">
+        <h4>Railway Underpasses &amp; Culverts</h4>
+        <p>
+          Experience also includes railway underpasses, culverts, drainage
+          structures, and other related civil infrastructure works. Such
+          projects involve activities such as excavation, concrete work,
+          structural development, and coordinated site execution.
+        </p>
+      </div>
+
+      <div class="about-point">
+        <h4>Government Infrastructure Projects</h4>
+        <p>
+          AMC undertakes infrastructure projects according to defined project
+          requirements and specifications. Site supervision, workforce
+          coordination, material management, quality practices, and project
+          documentation form an important part of the execution process.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="about-section">
+      <h3> Professional Work Approach</h3>
+      <p>
+        AMC follows a systematic approach to construction and project
+        execution, focusing on proper planning, site coordination, material
+        and machinery management, workforce utilization, quality control,
+        and organized project execution. The company aims to maintain
+        efficient coordination between different site activities while
+        meeting project requirements.
+      </p>
+    </div>
+
+    <div class="about-section contact-section">
+      <h3> Contact Information</h3>
+
+      <p>
+        <strong>Anil Mehta Co. (AMC)</strong><br>
+        <strong>A Class Government Contractor of Road &amp; Bridge</strong>
+      </p>
+
+      <p>
+        <strong>Registered &amp; Head Office:</strong><br>
+        H.No. 68/1, Govind Nagar, Race Course,<br>
+        Dehradun – 248001
+      </p>
+
+<p>
+  <strong>Contact:</strong><br>
+
+  <a href="tel:+919988666240" class="contact-link">
+    📞 +91 9988666240
+  </a>
+  <br>
+
+  <a href="tel:+919888875549" class="contact-link">
+    📞 +91 9888875549
+  </a>
+</p>
+
+<p>
+  <strong>Email:</strong><br>
+
+  <a href="mailto:mehtakunal0775@gmail.com" class="contact-link">
+    ✉️ mehtakunal0775@gmail.com
+  </a>
+</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+</main></div>
+<div class="modal" id="modal"><div class="modal-box"><button class="close" id="closeModal">×</button><h2 id="modalTitle"></h2><form id="entryForm"></form></div></div><script type="module" src="app.js"></script></body></html>
